@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>سیستم تریاژ هوشمند</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: #f0f8ff;
+        }
+    </style>
+</head>
+
+<body class="font-sans">
+
+    <!-- Navbar -->
+    <header class="bg-blue-700 text-white p-5 shadow-lg">
+        <nav class="container mx-auto flex justify-between">
+            <h1 class="text-xl font-bold">🩺 سیستم تریاژ هوشمند</h1>
+            <div class="space-x-4 space-x-reverse">
+                <a href="/" class="hover:text-yellow-300">خانه</a>
+                <a href="#triage" class="hover:text-yellow-300">تریاژ</a>
+                <a href="#about" class="hover:text-yellow-300">درباره ما</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="text-center mt-10">
+        <img src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" 
+             class="w-32 mx-auto opacity-80" />
+        <h2 class="text-3xl font-bold mt-4 text-blue-800">فرم تریاژ هوشمند</h2>
+        <p class="mt-2 text-gray-600">علائم خود را وارد کنید تا هوش مصنوعی تحلیل کند</p>
+    </section>
+
+    <!-- Triage Form -->
+    <section id="triage" class="container mx-auto max-w-xl bg-white mt-10 p-6 rounded-xl shadow">
+
+        <h3 class="text-xl font-semibold mb-3">ورود علائم</h3>
+
+        <textarea id="symptoms"
+                  class="w-full h-40 border-2 border-blue-400 p-3 rounded-lg focus:border-blue-700"
+                  placeholder="مثال: تب، لرز، نفس تنگی، سردرد شدید..."></textarea>
+
+        <button id="sendBtn"
+                class="mt-4 w-full bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-lg shadow">
+                تحلیل با هوش مصنوعی
+        </button>
+
+        <!-- Result -->
+        <div id="resultBox" class="mt-5 hidden bg-green-100 p-4 rounded-lg border border-green-500">
+            <h4 class="text-green-700 font-bold">نتیجه:</h4>
+            <p id="resultText" class="mt-2 text-gray-800"></p>
+        </div>
+
+    </section>
+
+    <!-- About -->
+    <section id="about" class="container mx-auto max-w-2xl mt-10 p-6 mb-20">
+        <h3 class="text-2xl font-bold text-blue-900">درباره سیستم</h3>
+        <p class="mt-4 text-gray-700 leading-8">
+            این سیستم با استفاده از هوش مصنوعی (LLM) علائم بیمار را تحلیل کرده و
+            بیماری‌های احتمالی را با درصد احتمال ارائه می‌دهد.
+        </p>
+    </section>
+
+    <!-- JS -->
+    <script>
+        document.getElementById("sendBtn").addEventListener("click", async () => {
+
+            const symptoms = document.getElementById("symptoms").value;
+
+            if (!symptoms.trim()) {
+                alert("لطفاً علائم را وارد کنید.");
+                return;
+            }
+
+            const res = await fetch("/api/triage", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ symptoms }),
+            });
+
+            const data = await res.json();
+
+            document.getElementById("resultText").innerText = data.result;
+            document.getElementById("resultBox").classList.remove("hidden");
+        });
+    </script>
+
+</body>
+</html>
